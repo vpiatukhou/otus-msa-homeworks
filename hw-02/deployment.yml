@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+  labels:
+    app.kubernetes.io/name: my-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: my-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: id1234ht8/otus-msa-hw-01:latest
+        ports:
+        - containerPort: 8000
+          name: my-app-port
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          failureThreshold: 3
