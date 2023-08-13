@@ -1,0 +1,24 @@
+#
+#The job inserts initial data into the Postgres DB.
+#
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: app-initdb-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: postgres-insert-data-container
+          image: postgres:15.3
+          command: ["bash"]
+          args: ["-c", "PGPASSWORD={{ .Values.app.postgres.password }} psql -h {{ .Values.app.postgres.host }} -p {{ .Values.app.postgres.port }} -U {{ .Values.app.postgres.username }} -w -d {{ .Values.app.postgres.database }} -a -f /init-db/init-db.sql"]
+          volumeMounts:
+            - name: app-initdb-volume
+              mountPath: /init-db
+      volumes:
+        - name: app-initdb-volume
+          configMap:
+            name: app-initdb-configmap
+      restartPolicy: OnFailure
+  backoffLimit: 0
