@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    username: ${APP_SECRET_DATASOURCE_USERNAME}
+    password: ${APP_SECRET_DATASOURCE_PASSWORD}
+  jpa:
+    open-in-view: false
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: 'prometheus'
+  endpoint:
+    web:
+      enabled: true

@@ -1,0 +1,28 @@
+configmapReload:
+  prometheus:
+    enabled: false
+
+server:
+  persistentVolume:
+    size: 50Mi
+
+serverFiles:
+  prometheus.yml:
+    scrape_configs:
+      - job_name: app
+        scrape_interval: 5s
+        metrics_path: /actuator/prometheus
+        static_configs:
+          - targets: ['app-service.app.svc.cluster.local:8000']
+
+alertmanager:
+  enabled: false
+
+kube-state-metrics:
+  enabled: false
+
+prometheus-node-exporter:
+  enabled: false
+
+prometheus-pushgateway:
+  enabled: false

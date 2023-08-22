@@ -1,0 +1,8 @@
+app:
+  postgres:
+    database: hw
+    host: postgres-postgresql.postgres.svc.cluster.local
+    #it is fine to add this password to a version control system because it is an educational project
+    password: postgres123
+    port: 5432
+    username: postgres
