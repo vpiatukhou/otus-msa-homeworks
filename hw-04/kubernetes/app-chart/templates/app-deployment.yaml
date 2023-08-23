@@ -29,7 +29,7 @@ spec:
               secretKeyRef:
                 name: app-secret
                 key: APP_SECRET_DATASOURCE_PASSWORD
-        image: id1234ht8/hw-04:0.0.2
+        image: id1234ht8/hw-04:0.0.1
         livenessProbe:
           httpGet:
             path: /health

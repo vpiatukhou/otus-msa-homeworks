@@ -10,7 +10,7 @@
   </parent>
   <groupId>homework</groupId>
   <artifactId>hw-04</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.1</version>
   <name>hw-04</name>
   <description>OTUS "Microservice Architecture" Course - Homework 04</description>
   <properties>

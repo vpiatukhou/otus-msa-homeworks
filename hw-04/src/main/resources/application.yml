@@ -11,7 +11,7 @@ management:
     enabled-by-default: false
     web:
       exposure:
-        include: 'prometheus'
+        include: prometheus
   endpoint:
-    web:
+    prometheus:
       enabled: true
