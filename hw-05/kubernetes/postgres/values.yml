@@ -1,0 +1,8 @@
+auth:
+  database: hw
+  postgresPassword: postgres123
+  enablePostgresUser: true
+
+primary:
+  persistence:
+    size: 10Mi #it is enough for educational purposes

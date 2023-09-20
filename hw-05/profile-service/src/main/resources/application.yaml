@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    username: ${APP_SECRET_DATASOURCE_USERNAME}
+    password: ${APP_SECRET_DATASOURCE_PASSWORD}
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate.default_schema: user_service

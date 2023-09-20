@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-initdb-configmap
+  namespace: app
+  labels:
+    app.kubernetes.io/name: auth
+data:
+  #TODO move passwords to values.yaml
+  init-db.sql: |
+    DO
+    $do$
+    BEGIN
+      IF EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = 'auth') THEN
+        RAISE NOTICE 'Schema "auth" already exists. Do nothing.';
+      ELSE
+        CREATE USER {{.Values.auth.postgres.username}} PASSWORD '{{.Values.auth.postgres.password}}';
+        CREATE SCHEMA auth AUTHORIZATION {{.Values.auth.postgres.username}};
+        CREATE TABLE auth.account(username TEXT PRIMARY KEY, password TEXT NOT NULL);
+        ALTER TABLE auth.account OWNER TO auth;
+      END IF;
+    END
+    $do$;

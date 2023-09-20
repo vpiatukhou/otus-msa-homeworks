@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: profile-initdb-configmap
+  namespace: app
+  labels:
+    app.kubernetes.io/name: profile
+data:
+  #TODO move passwords to values.yaml
+  init-db.sql: |
+    DO
+    $do$
+    BEGIN
+      IF EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = 'profile') THEN
+        RAISE NOTICE 'Schema "profile" already exists. Do nothing.';
+      ELSE
+        CREATE USER {{.Values.auth.postgres.username}} PASSWORD '{{.Values.auth.postgres.password}}';
+        CREATE SCHEMA profile AUTHORIZATION {{.Values.auth.postgres.username}};
+        CREATE TABLE profile.profile(username   TEXT PRIMARY KEY,
+                                     first_name TEXT,
+                                     last_name  TEXT,
+                                     email      TEXT,
+                                     phone      TEXT);
+        ALTER TABLE profile.profile OWNER TO profile;
+      END IF;
+    END
+    $do$;
