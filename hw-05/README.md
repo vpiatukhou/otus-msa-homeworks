@@ -10,7 +10,9 @@ helm dependency build ./kubernetes/app-chart
 helm install app ./kubernetes/app-chart -f ./kubernetes/app-chart/values.yaml --namespace app
 ```
 
-Запустить туннель:
+Для запуска приложению требуется около 30 секунд.
+
+Создайте туннель:
 
 `minikube tunnel`
 
@@ -27,5 +29,3 @@ helm install app ./kubernetes/app-chart -f ./kubernetes/app-chart/values.yaml --
 helm uninstall app --namespace app
 kubectl delete namespace app
 ```
-ПРИМЕЧАНИЕ: в процессе установки приложения создается Persistent Volume объемом 10Mi.
-Он не удаляется автоматически, его необходимо удалить вручную командой `kubectl delete pv <имя persistent volume>`.

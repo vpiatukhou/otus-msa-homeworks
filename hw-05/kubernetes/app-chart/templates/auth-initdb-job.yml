@@ -14,7 +14,9 @@ spec:
         - name: auth-initdb-container
           image: postgres:15.3
           command: ["bash"]
-          args: ["-c", "PGPASSWORD={{ .Values.app.postgres.password }} \
+          # wait 20 seconds to make sure that postgres is ready. The solution is bad but simple.
+          args: ["-c", "sleep 20 && \
+                        PGPASSWORD={{ .Values.app.postgres.password }} \
                         psql -w -a \
                              -h {{ .Values.app.postgres.host }} \
                              -p {{ .Values.app.postgres.port }} \
@@ -28,5 +30,5 @@ spec:
         - name: auth-initdb-volume
           configMap:
             name: auth-initdb-configmap
-      restartPolicy: Never
-  backoffLimit: 0
+      restartPolicy: OnFailure
+  backoffLimit: 3

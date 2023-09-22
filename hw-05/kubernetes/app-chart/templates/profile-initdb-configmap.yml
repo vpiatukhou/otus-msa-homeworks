@@ -13,8 +13,8 @@ data:
       IF EXISTS (SELECT * FROM information_schema.schemata WHERE schema_name = 'profile') THEN
         RAISE NOTICE 'Schema "profile" already exists. Do nothing.';
       ELSE
-        CREATE USER {{.Values.app.auth.postgres.username}} PASSWORD '{{.Values.app.auth.postgres.password}}';
-        CREATE SCHEMA profile AUTHORIZATION {{.Values.app.auth.postgres.username}};
+        CREATE USER {{.Values.app.profile.postgres.username}} PASSWORD '{{.Values.app.profile.postgres.password}}';
+        CREATE SCHEMA profile AUTHORIZATION {{.Values.app.profile.postgres.username}};
         CREATE TABLE profile.profile(username   TEXT PRIMARY KEY,
                                      first_name TEXT,
                                      last_name  TEXT,
