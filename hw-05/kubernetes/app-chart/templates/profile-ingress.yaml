@@ -2,7 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: profile-ingress
-  namespace: app
   labels:
     app.kubernetes.io/name: profile
   annotations:

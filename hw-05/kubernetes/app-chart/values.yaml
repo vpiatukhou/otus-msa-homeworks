@@ -1,19 +1,34 @@
-postgres:
-  host: postgres-postgresql.app.svc.cluster.local
-  port: 5432
-  database: hw
-  #it is fine to add this password to a version control system because it is an educational project
-  password: postgres123
-  username: postgres
+### application ################
 
-auth:
+app:
   postgres:
+    host: app-postgresql
+    port: 5432
+    database: hw
     #it is fine to add this password to a version control system because it is an educational project
-    password: auth123
-    username: auth
+    password: postgres123
+    username: postgres
 
-profile:
-  postgres:
-    #it is fine to add this password to a version control system because it is an educational project
-    password: profile123
-    username: profile
+  auth:
+    postgres:
+      #it is fine to add this password to a version control system because it is an educational project
+      password: auth123
+      username: auth
+
+  profile:
+    postgres:
+      #it is fine to add this password to a version control system because it is an educational project
+      password: profile123
+      username: profile
+
+### postgres ################
+
+postgresql:
+  auth:
+    database: hw
+    postgresPassword: postgres123
+    enablePostgresUser: true
+
+  primary:
+    persistence:
+      size: 10Mi #it is enough for educational purposes

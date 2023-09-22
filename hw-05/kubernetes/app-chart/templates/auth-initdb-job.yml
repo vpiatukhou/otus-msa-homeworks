@@ -5,7 +5,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: auth-initdb-job
-  namespace: app
   labels:
     app.kubernetes.io/name: auth
 spec:
@@ -15,12 +14,12 @@ spec:
         - name: auth-initdb-container
           image: postgres:15.3
           command: ["bash"]
-          args: ["-c", "PGPASSWORD={{ .Values.postgres.password }} \
+          args: ["-c", "PGPASSWORD={{ .Values.app.postgres.password }} \
                         psql -w -a \
-                             -h {{ .Values.postgres.host }} \
-                             -p {{ .Values.postgres.port }} \
-                             -U {{ .Values.postgres.username }} \
-                             -d {{ .Values.postgres.database }} \
+                             -h {{ .Values.app.postgres.host }} \
+                             -p {{ .Values.app.postgres.port }} \
+                             -U {{ .Values.app.postgres.username }} \
+                             -d {{ .Values.app.postgres.database }} \
                              -f /init-db/init-db.sql"]
           volumeMounts:
             - name: auth-initdb-volume
