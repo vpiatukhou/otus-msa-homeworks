@@ -158,6 +158,15 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -243,6 +252,15 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"randomStr\", pm.variables.replaceIn(\"{{$randomAlphaNumeric}}{{$randomAlphaNumeric}}{{$randomAlphaNumeric}}{{$randomAlphaNumeric}}\"));"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -256,7 +274,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"first_name\": \"Mikhail\",\r\n    \"last_name\": \"Lomonosov\",\r\n    \"email\": \"mlomonosov@example.com\",\r\n    \"phone\": \"+555111222333\"\r\n}"
+					"raw": "{\r\n    \"first_name\": \"Mikhail-{{randomStr}}\",\r\n    \"last_name\": \"Lomonosov-{{randomStr}}\",\r\n    \"email\": \"mlomonosov-{{randomStr}}@example.com\",\r\n    \"phone\": \"+555111222333\"\r\n}"
 				},
 				"url": {
 					"raw": "http://arch.homework/profiles/me",
@@ -285,13 +303,14 @@
 							"});\r",
 							"\r",
 							"const expectedUsername = pm.collectionVariables.get(\"username\");\r",
+							"const randomStr = pm.collectionVariables.get(\"randomStr\");\r",
 							"\r",
 							"pm.test(\"Body is correct\", function () {\r",
 							"    const jsonData = pm.response.json();\r",
 							"    pm.expect(jsonData.username).to.eql(expectedUsername);\r",
-							"    pm.expect(jsonData.first_name).to.eql(\"Mikhail\");\r",
-							"    pm.expect(jsonData.last_name).to.eql(\"Lomonosov\");\r",
-							"    pm.expect(jsonData.email).to.eql(\"mlomonosov@example.com\");\r",
+							"    pm.expect(jsonData.first_name).to.eql(\"Mikhail-\" + randomStr);\r",
+							"    pm.expect(jsonData.last_name).to.eql(\"Lomonosov-\" + randomStr);\r",
+							"    pm.expect(jsonData.email).to.eql(\"mlomonosov-\" + randomStr + \"@example.com\");\r",
 							"    pm.expect(jsonData.phone).to.eql(\"+555111222333\");\r",
 							"});\r",
 							""
@@ -503,6 +522,10 @@
 		},
 		{
 			"key": "username2",
+			"value": ""
+		},
+		{
+			"key": "randomStr",
 			"value": ""
 		}
 	]
