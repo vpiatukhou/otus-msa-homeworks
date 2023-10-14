@@ -23,6 +23,7 @@ public class OrderHttpHandlerImpl implements HttpHandler {
     private static final String HTTP_METHOD_GET = "GET";
     private static final String HTTP_METHOD_POST = "POST";
     private static final int HTTP_OK = 200;
+    private static final int HTTP_CONFLICT = 409;
     private static final int HTTP_BAD_REQUEST = 400;
     private static final int HTTP_UNAUTHORIZED = 401;
     private static final int HTTP_INTERNAL_ERROR = 500;
@@ -81,7 +82,10 @@ public class OrderHttpHandlerImpl implements HttpHandler {
                 var idempotencyKey = Objects.toString(requestMap.get("idempotency_key"), "");
                 var pickup = Objects.toString(requestMap.get("from"), "");
                 var destination = Objects.toString(requestMap.get("to"), "");
-                orderDao.createOrder(new CreateOrderDto(idempotencyKey, pickup, destination, username));
+                if (!orderDao.createOrder(new CreateOrderDto(idempotencyKey, pickup, destination, username))) {
+                    exchange.sendResponseHeaders(HTTP_CONFLICT, -1);
+                    return;
+                }
             }
             exchange.sendResponseHeaders(HTTP_OK, -1);
         }

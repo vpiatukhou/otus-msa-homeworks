@@ -83,7 +83,7 @@ public class OrderDao {
         }
     }
 
-    public void createOrder(CreateOrderDto orderDto) {
+    public boolean createOrder(CreateOrderDto orderDto) {
         try (var connection = dataSource.getConnection()) {
             try(var insertStatement = connection.prepareStatement(INSERT_ORDER);
                 var updateStatement = connection.prepareStatement(UPDATE_IDEMPOTENCY_KEY)) {
@@ -106,6 +106,7 @@ public class OrderDao {
                 connection.rollback();
                 if (PG_ERROR_UNIQUE_VIOLATION.equals(e.getSQLState())) {
                     LOGGER.log(Level.WARNING, "Unique constraint violation on inserting order.");
+                    return false;
                 } else {
                     throw new RuntimeException(e);
                 }
@@ -118,5 +119,6 @@ public class OrderDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return true;
     }
 }
