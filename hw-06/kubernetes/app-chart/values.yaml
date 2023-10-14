@@ -1,0 +1,22 @@
+### application ################
+
+app:
+  postgres:
+    host: app-postgresql
+    port: 5432
+    database: hw
+    #it is fine to add this password to a version control system because it is an educational project
+    password: postgres123
+    username: postgres
+
+### postgres ################
+
+postgresql:
+  auth:
+    database: hw
+    postgresPassword: postgres123
+    enablePostgresUser: true
+
+  primary:
+    persistence:
+      size: 10Mi #it is enough for educational purposes
