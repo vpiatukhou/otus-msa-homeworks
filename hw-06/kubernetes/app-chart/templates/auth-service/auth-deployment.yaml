@@ -30,7 +30,7 @@ spec:
                   name: auth-secret
                   key: APP_SECRET_DATASOURCE_PASSWORD
           image: id1234ht8/auth-service:0.0.1
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
               name: port
