@@ -1,0 +1,489 @@
+{
+	"info": {
+		"_postman_id": "0acd7e6d-0e52-47f5-aba9-f1bfbfdbd2fd",
+		"name": "hw-06",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29101080"
+	},
+	"item": [
+		{
+			"name": "logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://arch.homework/logout",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const username = pm.variables.replaceIn(\"mlomonosov-{{$randomAlphaNumeric}}{{$randomAlphaNumeric}}{{$randomAlphaNumeric}}{{$randomAlphaNumeric}}\");\r",
+							"pm.collectionVariables.set(\"username\", username);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{username}}123\"\r\n}"
+				},
+				"url": {
+					"raw": "http://arch.homework/register",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{username}}123\"\r\n}"
+				},
+				"url": {
+					"raw": "http://arch.homework/login",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get a next idempotency key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body is correct\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    var key = jsonData.next_idempotency_key;\r",
+							"    pm.expect(key).to.not.eql(null);\r",
+							"    pm.expect(key).to.not.eql(\"\");\r",
+							"\r",
+							"    pm.collectionVariables.set(\"idempotency_key\", key);\r",
+							"    pm.collectionVariables.set(\"num_of_orders\", jsonData.orders.length);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/orders",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create an order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const from = \"Evergreen, \" + _.random(1, 99)\r",
+							"pm.collectionVariables.set(\"from\", from);\r",
+							"const to = \"Baker, \" + _.random(1, 99)\r",
+							"pm.collectionVariables.set(\"to\", to);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-User",
+						"value": "Walter",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"idempotency_key\": \"{{idempotency_key}}\",\r\n    \"from\": \"{{from}}\",\r\n    \"to\": \"{{to}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/orders",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create an order with the same idempotency key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-User",
+						"value": "Walter",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"idempotency_key\": \"{{next_idempotency_key}}\",\r\n    \"from\": \"{{from}}\",\r\n    \"to\": \"{{to}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/orders",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list orders and get a next idempotency key",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body is correct\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    var key = jsonData.next_idempotency_key;\r",
+							"    pm.expect(key).to.not.eql(null);\r",
+							"    pm.expect(key).to.not.eql(\"\");\r",
+							"\r",
+							"    var prevKey = pm.collectionVariables.get(\"idempotency_key\");\r",
+							"    pm.expect(key).to.not.eql(prevKey); //make sure that a NEW key was generated\r",
+							"\r",
+							"    var prevNumOfOrders = pm.collectionVariables.get(\"num_of_orders\");\r",
+							"    pm.expect(jsonData.orders.length).to.eql(prevNumOfOrders + 1); //make sure that exactly one order was created\r",
+							"    \r",
+							"    pm.collectionVariables.set(\"new_idempotency_key\", key);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/orders",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create one more order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const from = \"Evergreen, \" + _.random(1, 99)\r",
+							"pm.collectionVariables.set(\"from\", from);\r",
+							"const to = \"Baker, \" + _.random(1, 99)\r",
+							"pm.collectionVariables.set(\"to\", to);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-User",
+						"value": "Walter",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"idempotency_key\": \"{{new_idempotency_key}}\",\r\n    \"from\": \"{{from}}\",\r\n    \"to\": \"{{to}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/orders",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body is correct\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    var key = jsonData.next_idempotency_key;\r",
+							"    pm.expect(key).to.not.eql(null);\r",
+							"    pm.expect(key).to.not.eql(\"\");\r",
+							"\r",
+							"    var prevKey = pm.collectionVariables.get(\"new_idempotency_key\");\r",
+							"    pm.expect(key).to.not.eql(prevKey); //make sure that a NEW key was generated\r",
+							"\r",
+							"    var prevNumOfOrders = pm.collectionVariables.get(\"num_of_orders\");\r",
+							"    pm.expect(jsonData.orders.length).to.eql(prevNumOfOrders + 2); //make sure that one more order was created\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/orders",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": ""
+		},
+		{
+			"key": "username2",
+			"value": ""
+		},
+		{
+			"key": "randomStr",
+			"value": ""
+		},
+		{
+			"key": "next_idempotency_key",
+			"value": ""
+		},
+		{
+			"key": "num_of_orders",
+			"value": ""
+		},
+		{
+			"key": "from",
+			"value": ""
+		},
+		{
+			"key": "to",
+			"value": ""
+		},
+		{
+			"key": "idempotency_key",
+			"value": ""
+		},
+		{
+			"key": "new_idempotency_key",
+			"value": ""
+		}
+	]
+}

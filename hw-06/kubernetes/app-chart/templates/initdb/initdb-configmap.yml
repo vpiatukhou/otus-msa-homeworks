@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: initdb-configmap
+  labels:
+    app.kubernetes.io/name: initdb
+data:
+  init-db.sql: |
+    DO
+    $do$
+    BEGIN
+      CREATE SCHEMA IF NOT EXISTS auth_service;
+      CREATE SCHEMA IF NOT EXISTS profile_service;
+      CREATE SCHEMA IF NOT EXISTS order_service;
+    END
+    $do$;

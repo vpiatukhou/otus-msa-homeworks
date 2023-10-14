@@ -1,4 +1,4 @@
-package homework;
+package homework.model;
 
 public record Profile(String username,
                       String firstName,

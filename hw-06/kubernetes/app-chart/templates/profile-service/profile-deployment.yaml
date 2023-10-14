@@ -18,7 +18,7 @@ spec:
         - name: profile-container
           env:
             - name: DB_URL
-              value: jdbc:postgresql://{{ .Values.app.postgres.host }}:{{ .Values.app.postgres.port }}/{{ .Values.app.postgres.database }}
+              value: jdbc:postgresql://{{ .Values.app.postgres.host }}:{{ .Values.app.postgres.port }}/{{ .Values.app.postgres.database }}?currentSchema=profile_service
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -30,7 +30,7 @@ spec:
                   name: profile-secret
                   key: APP_SECRET_DATASOURCE_PASSWORD
           image: id1234ht8/profile-service:0.0.1
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
               name: port

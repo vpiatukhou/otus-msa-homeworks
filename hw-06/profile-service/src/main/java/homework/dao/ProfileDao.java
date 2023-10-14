@@ -1,12 +1,13 @@
-package homework;
+package homework.dao;
 
+import homework.model.Profile;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Optional;
 
-class ProfileDao {
+public class ProfileDao {
 
     private static final String INSERT_PROFILE = """
         INSERT INTO profile(first_name, last_name, email, phone, username) VALUES(?, ?, ?, ?, ?)
@@ -37,7 +38,7 @@ class ProfileDao {
         dataSource = pgDataSource;
     }
 
-    void createProfile(Profile profile) {
+    public void createProfile(Profile profile) {
         try (var statement = dataSource.getConnection().prepareStatement(INSERT_PROFILE)) {
             statement.setString(1, profile.firstName());
             statement.setString(2, profile.lastName());
@@ -50,7 +51,7 @@ class ProfileDao {
         }
     }
 
-    void updateProfile(Profile profile) {
+    public void updateProfile(Profile profile) {
         try (var statement = dataSource.getConnection().prepareStatement(UPDATE_PROFILE)) {
             statement.setString(1, profile.firstName());
             statement.setString(2, profile.lastName());
@@ -63,7 +64,7 @@ class ProfileDao {
         }
     }
 
-    Optional<Profile> getProfileByUsername(String username) {
+    public Optional<Profile> getProfileByUsername(String username) {
         try (var statement = dataSource.getConnection().prepareStatement(SELECT_PROFILE)) {
             statement.setString(1, username);
             var result = statement.executeQuery();

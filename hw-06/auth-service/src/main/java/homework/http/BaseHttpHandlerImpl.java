@@ -1,4 +1,4 @@
-package homework;
+package homework.http;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

@@ -1,0 +1,34 @@
+#
+# The job creates schema in the PostgreSQL DB.
+#
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: initdb-job
+  labels:
+    app.kubernetes.io/name: initdb
+spec:
+  template:
+    spec:
+      containers:
+        - name: initdb-container
+          image: postgres:15.3
+          command: ["bash"]
+          # wait 20 seconds to make sure that postgres is ready. The solution is bad but simple.
+          args: ["-c", "sleep 20 && \
+                        PGPASSWORD={{ .Values.app.postgres.password }} \
+                        psql -w -a \
+                             -h {{ .Values.app.postgres.host }} \
+                             -p {{ .Values.app.postgres.port }} \
+                             -U {{ .Values.app.postgres.username }} \
+                             -d {{ .Values.app.postgres.database }} \
+                             -f /init-db/init-db.sql"]
+          volumeMounts:
+            - name: initdb-volume
+              mountPath: /init-db
+      volumes:
+        - name: initdb-volume
+          configMap:
+            name: initdb-configmap
+      restartPolicy: OnFailure
+  backoffLimit: 3
