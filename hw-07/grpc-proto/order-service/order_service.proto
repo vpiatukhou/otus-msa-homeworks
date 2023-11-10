@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+enum PaymentMethod {
+  PAYMENT_METHOD_UNSPECIFIED = 0;
+  PAYMENT_METHOD_CASH = 1;
+  PAYMENT_METHOD_CARD= 2;
+}
+
+message PrepareOrderRequest {
+  string passenger_id = 1; // Пассажир, который вызывает такси
+  string pickup = 2; // Точка на карте, где нужно забрать Пассажира
+  string destination = 3; // Точка на карте, куда нужно отвезти Пассажира
+  string tariff_id = 4; // По какому тарифу везти
+  repeated string options = 5; // Необходимые опции: детское автокресло, помощь инвалиду и т.п.
+  PaymentMethod paymentMethod = 6;
+}
+
+message PrepareOrderResponse {
+  string order_id = 1; // ID заказа
+  string route = 2; // Маршрут для отображения на карте. "string" - это временный тип данных.
+                    // Фактический тип данных должен быть выбран в зависимости от того, что принимает API картографического сервиса
+}
+
+message PlaceOrderRequest {
+  string order_id = 1; // ID заказа, полученный в PrepareOrderResponse
+}
+
+message PlaceOrderResponse {
+}
+
+message ApplyOrderRequest {
+  string order_id = 1; // ID принятого заказа
+  string driver_id = 2; // ID Водителя, принявшего заказ
+}
+
+message ApplyOrderResponse {
+}
+
+message CancelOrderRequest {
+  string order_id = 1;
+  string comment = 2; // Необязательный комментарий. Виден Водителю.
+}
+
+message CancelOrderResponse {
+}
+
+message CompleteOrderReqest {
+  string order_id = 1;
+}
+
+message CompleteOrderResponse {
+}
+
+message CloseOrderRequest {
+  string order_id = 1;
+  int32 rating = 2;
+  string comment = 3;
+}
+
+message CloseOrderResponse {
+}
+
+service OrderService {
+  // Строит маршрут и вычисляет стоимость.
+  // Вызывайте этот метод каждый раз когда Пассажир меняет какие-либо параметры заказа (пункт назначения, тариф и т.п.).
+  // Стоимость может быть изменена ТОЛЬКО если этот метод был вызван повторно.
+  rpc PrepareOrder(PrepareOrderRequest) returns (PrepareOrderResponse);
+  // После вызова этого метода начинается поиск ближайшей машины.
+  // Кроме того выполняется проверка работоспособности банковской карты.
+  rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
+  // Водитель принял заказ. После вызова этого метода поиск машины прекращается и Пассажир получает уведомление что машина в пути.
+  rpc ApplyOrder(ApplyOrderRequest) returns (ApplyOrderResponse);
+  // Пассажир отменил заказ.
+  rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse);
+  // Водитель сообщаяет что заказ выполнен.
+  rpc CompleteOrder(CompleteOrderReqest) returns (CompleteOrderResponse);
+  // Пассажир подтверждает что заказ выполнен. Вызов этого метода инициирует олату заказа.
+  rpc CloseOrder(CloseOrderRequest) returns (CloseOrderResponse);
+}

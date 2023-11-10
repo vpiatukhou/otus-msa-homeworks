@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+message BuildRouteRequest {
+  string pickup = 1;
+  string destination = 2;
+}
+
+message BuildRouteResponse {
+  string route = 1; // Маршрут для отображения на карте. "string" - это временный тип данных.
+                    // Фактический тип данных должен быть выбран в зависимости от того, что принимает API картографического сервиса
+}
+
+service RouteService {
+  rpc BuildRoute(BuildRouteRequest) returns (BuildRouteResponse);
+}

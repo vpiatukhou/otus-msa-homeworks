@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+// Этот тип сообщения введен для простоты понимания API.
+// В реальном приложении скорее всего бы использовался https://github.com/googleapis/googleapis/blob/master/google/type/money.proto
+message Money {
+  int64 unit = 1;
+  int32 fractional = 2;
+}
+
+message CreateTariffRequest {
+  string owner_id = 1; // Пользователь с правами Администратора. В данной версии программы - это Водитель. В будущих версиях это может быть представитель таксопарка.
+  string tariff_name = 2;
+  Money price_km = 3; // Стоимость поездки: рубли за километр. На данный момоент тариф фиксированный, однако в будущих версиях можно добавить коэффициенты для снижения стоимости по утрам и повышения цены в вечернее время, во время дождя и т.п.
+}
+
+message CreateTariffResponse {
+  string tariff_id = 1;
+}
+
+message DisableTariffRequest {
+  string owner_id = 1;
+  string tariff_id = 2;
+}
+
+message DisableTariffResponse {
+}
+
+message ListTariffsRequest {
+}
+
+message ListTariffsResponse {
+  string tariff_name = 1;
+  Money price_km = 2;
+}
+
+service TariffService {
+  rpc CreateTariff(CreateTariffRequest) returns (CreateTariffResponse);
+  rpc DisableTariff(DisableTariffRequest) returns (DisableTariffResponse);
+  rpc ListTariffs(ListTariffsRequest) returns (ListTariffsResponse);
+}

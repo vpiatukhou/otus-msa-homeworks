@@ -1,0 +1,55 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+message GeoCoordinates {
+  string latitude = 1;
+  string longitude = 2;
+}
+
+enum DriverStatus {
+  DRIVER_STATUS_UNSPECIFIED = 0;
+  DRIVER_STATUS_FREE = 1; // Водитель свободен. Такие Водители имеют приоритет в получении заказов.
+  DRIVER_STATUS_BUSY = 2; // Водитель уже взял чей-то заказ.
+  DRIVER_STATUS_NOT_DISTURB = 3; // Водитель просит его не беспокоить. Например, у него закончился рабочий день.
+}
+
+message UpdateDriverStatusRequest {
+  string driver_id = 1;
+  GeoCoordinates coordinates = 2;
+  DriverStatus status = 3;
+}
+
+message UpdateDriverStatusResponse {
+}
+
+message WaitForOrderRequest {
+  string driver_id = 1;
+}
+
+message WaitForOrderResponse {
+  string order_id = 1;
+  string route_id = 2;
+  string price = 3;
+  // Заказ должен быть принят до этой временной метки. В противном случае он будет передан другому Водителю.
+  Timestamp deadline = 5;
+}
+
+message GetDriverStatusRequest {
+  string order_id = 1;
+}
+
+message GetDriverStatusResponse {
+  bool is_driver_found = 1;
+  string driver_id = 2;
+  int32 arrival_time_min = 3;
+}
+
+// Выполняет поиск свободных машин.
+service CarLocatorService {
+  // Этот метод создает поток сообщений, при помощи которого Водитель отсылает свой статус на сервер (например 1 раз в N секунд).
+  rpc UpdateDriverStatus(stream UpdateDriverStatusRequest) returns (UpdateDriverStatusResponse);
+  // Возвращает поток, при помощи которого Водитель получает информацию о поступивших заказах.
+  rpc WaitForOrder(WaitForOrderRequest) returns (stream WaitForOrderResponse);
+  // Этот метод вызывает Пассажир. Он возвращает поток, при помощи которого сервис информирует Пассажира, что водитель найден или не найден.
+  rpc GetDriverStatus(GetDriverStatusRequest) returns (stream GetDriverStatusResponse);
+}
