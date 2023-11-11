@@ -1,25 +1,17 @@
 syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 
-message GeoCoordinates {
-  string latitude = 1;
-  string longitude = 2;
-}
+message UpdateDriverCoordinatesRequest {
+  message GeoCoordinates {
+    string latitude = 1;
+    string longitude = 2;
+  }
 
-enum DriverStatus {
-  DRIVER_STATUS_UNSPECIFIED = 0;
-  DRIVER_STATUS_FREE = 1; // Водитель свободен. Такие Водители имеют приоритет в получении заказов.
-  DRIVER_STATUS_BUSY = 2; // Водитель уже взял чей-то заказ.
-  DRIVER_STATUS_NOT_DISTURB = 3; // Водитель просит его не беспокоить. Например, у него закончился рабочий день.
-}
-
-message UpdateDriverStatusRequest {
   string driver_id = 1;
   GeoCoordinates coordinates = 2;
-  DriverStatus status = 3;
 }
 
-message UpdateDriverStatusResponse {
+message UpdateDriverCoordinatesResponse {
 }
 
 message WaitForOrderRequest {
@@ -39,17 +31,40 @@ message GetDriverStatusRequest {
 }
 
 message GetDriverStatusResponse {
-  bool is_driver_found = 1;
-  string driver_id = 2;
-  int32 arrival_time_min = 3;
+  enum Status {
+    UNSPECIFIED = 0;
+    NOT_FOUND = 1; // никто из Водителей пока не взял заказ
+    ON_WAY = 2;    // Водитель уже в пути
+    WAITING_FOR_PASSENGER = 3; // Водитель прибыл и ожидает Пассажира
+  }
+
+  string driver_id = 1;
+  int32 arrival_time_min = 2;
+  Status status = 3;
+}
+
+message UpdateDriverStatusRequest {
+  enum Status {
+    UNSPECIFIED = 0;
+    WAITING_FOR_PASSENGER = 1; // Водитель прибыл и ожидает Пассажира
+  }
+
+  string order_id = 1;
+  Status status = 2;
+}
+
+message UpdateDriverStatusResponse {
 }
 
 // Выполняет поиск свободных машин.
 service CarLocatorService {
-  // Этот метод создает поток сообщений, при помощи которого Водитель отсылает свой статус на сервер (например 1 раз в N секунд).
-  rpc UpdateDriverStatus(stream UpdateDriverStatusRequest) returns (UpdateDriverStatusResponse);
+  // Этот метод создает поток сообщений, при помощи которого Водитель отсылает своии координаты на сервер (например 1 раз в N секунд).
+  rpc UpdateDriverCoordinates(stream UpdateDriverCoordinatesRequest) returns (UpdateDriverCoordinatesResponse);
   // Возвращает поток, при помощи которого Водитель получает информацию о поступивших заказах.
+  // Водитель вызывает этот метод перед началом рабочего дня. Если Водитель больше не хочет получать заказы, он должен разорвать соединение со своей стороны.
   rpc WaitForOrder(WaitForOrderRequest) returns (stream WaitForOrderResponse);
-  // Этот метод вызывает Пассажир. Он возвращает поток, при помощи которого сервис информирует Пассажира, что водитель найден или не найден.
+  // Этот метод вызывает Пассажир. Он возвращает поток, при помощи которого сервис информирует Пассажира, взял ли кто-нибудь заказ или нет.
   rpc GetDriverStatus(GetDriverStatusRequest) returns (stream GetDriverStatusResponse);
+  // Этот метод вызывает Водитель что бы сообщить что он на месте и ждет Пассажира.
+  rpc UpdateDriverStatus(GetDriverStatusRequest) returns (stream GetDriverStatusResponse);
 }

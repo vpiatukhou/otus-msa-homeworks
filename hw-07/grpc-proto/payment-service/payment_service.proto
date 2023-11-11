@@ -21,24 +21,19 @@ message RemoveCardRequest {
 message RemoveCardResponse {
 }
 
-message TestCardRequest {
-  string card_id = 1;
+message ListCardsRequest {
+  string user_id = 1;
 }
 
-message TestCardResponse {
-}
-
-message PayRequest {
-  string card_id = 1;
-  Money price = 2;
-}
-
-message PayResponse {
+message ListCardsResponse {
+  message Card {
+    string masked_card_number = 1; // номер карты в виде "1234************5678". Этого достаточно что бы пользователь понял какую карту он использует
+    string card_id = 2; // этот ID можно безопасно передавать по сети т.к. он не несет в себе какой-либо значимой информации.
+  }
 }
 
 service PaymentService {
   rpc AddCard(AddCardRequest) returns (AddCardResponse);
   rpc RemoveCard(RemoveCardRequest) returns (RemoveCardResponse);
-  rpc TestCard(TestCardRequest) returns (TestCardResponse);
-  rpc Pay(PayRequest) returns (PayResponse);
+  rpc ListCards(ListCardsRequest) returns (ListCardsResponse);
 }

@@ -1,12 +1,19 @@
 syntax = "proto3";
 
-enum PaymentMethod {
-  PAYMENT_METHOD_UNSPECIFIED = 0;
-  PAYMENT_METHOD_CASH = 1;
-  PAYMENT_METHOD_CARD= 2;
+// Этот тип сообщения введен для простоты понимания API.
+// В реальном приложении скорее всего бы использовался https://github.com/googleapis/googleapis/blob/master/google/type/money.proto
+message Money {
+  int64 unit = 1;
+  int32 fractional = 2;
 }
 
 message PrepareOrderRequest {
+  enum PaymentMethod {
+    UNSPECIFIED = 0;
+    CASH = 1;
+    CARD= 2;
+  }
+
   string passenger_id = 1; // Пассажир, который вызывает такси
   string pickup = 2; // Точка на карте, где нужно забрать Пассажира
   string destination = 3; // Точка на карте, куда нужно отвезти Пассажира
@@ -19,6 +26,7 @@ message PrepareOrderResponse {
   string order_id = 1; // ID заказа
   string route = 2; // Маршрут для отображения на карте. "string" - это временный тип данных.
                     // Фактический тип данных должен быть выбран в зависимости от того, что принимает API картографического сервиса
+  Money price = 3; // Стоимость поездки
 }
 
 message PlaceOrderRequest {
@@ -60,6 +68,24 @@ message CloseOrderRequest {
 message CloseOrderResponse {
 }
 
+message GetOrderStatusRequest {
+  string order_id = 1;
+}
+
+message GetOrderStatusResponse {
+  enum Status {
+    UNSPECIFIED = 0;
+    DRAFT = 1;
+    PLACED = 2;
+    APPLIED = 3;
+    COMPLETED = 4;
+    CLOSED = 5;
+  }
+
+  string route = 1; // Маршрут для отображения на карте.
+  Money price = 2;
+}
+
 service OrderService {
   // Строит маршрут и вычисляет стоимость.
   // Вызывайте этот метод каждый раз когда Пассажир меняет какие-либо параметры заказа (пункт назначения, тариф и т.п.).
@@ -76,4 +102,6 @@ service OrderService {
   rpc CompleteOrder(CompleteOrderReqest) returns (CompleteOrderResponse);
   // Пассажир подтверждает что заказ выполнен. Вызов этого метода инициирует олату заказа.
   rpc CloseOrder(CloseOrderRequest) returns (CloseOrderResponse);
+  // Получить состояние заказа. На основании этого состояния можно показать или скрыть элементы интерфейса.
+  rpc GetOrderStatus(GetOrderStatusRequest) returns (GetOrderStatusResponse);
 }
